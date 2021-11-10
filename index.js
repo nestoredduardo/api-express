@@ -1,4 +1,6 @@
 const express = require('express');
+const faker = require('faker');
+
 const app = express();
 const port = 3000;
 
@@ -7,6 +9,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
+  const { limit, offset } = req.query;
+
   res.json({
     usersList: [
       { id: 1, name: 'name1' },
@@ -16,11 +20,23 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/products', (req, res) => {
-  res.json({
-    id: 1,
-    name: 'Auriculares',
-    price: 2000,
-  });
+  const products = [];
+  const { size } = req.query;
+  const limit = size || 10;
+
+  for (i = 0; i < limit; i++) {
+    products.push({
+      name: faker.commerce.productName(),
+      price: parseInt(faker.commerce.price(), 10),
+      image: faker.image.imageUrl(),
+    });
+  }
+
+  res.json(products);
+});
+
+app.get('/products/filter', (req, res) => {
+  res.send('Filtrando');
 });
 
 app.get('/products/:id', (req, res) => {
